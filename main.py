@@ -1,6 +1,7 @@
 # INF601 - Advanced Programming in Python
 # Brayan Gomez
 # Mini Project 2
+import array
 
 # (10/10 points) Using matplotlib, graph this data in a way that will visually represent the data. Really try to build some fancy charts here as it will greatly help you in future homework assignments and in the final project.
 # (10/10 points) Save these graphs in a folder called charts as PNG files. Do not upload these to your project folder, the project should save these when it executes. You may want to add this folder to your .gitignore file.
@@ -30,13 +31,37 @@ def files_found():
     return data
 
 
+def get_states(states):
+    #states = []
+    # get 5 states
+    for i in range(1,6):
+        # verify the states
+        while True:
+            print(f"Enter state(format:\"Kansas\"): ")
+            state_input = input(">")
+            try:
+                print("Verifying...")
+                if len(df.loc[df["State.Name"] == state_input]) == 0:
+                    raise NameError
+                print("Valid")
+                states.append(state_input)
+                break
+            except NameError:
+                print("Invalid state name")
+    return states
+
+
 # CSV is found and saved to a panda dataframe
 df = pd.DataFrame(pd.read_csv("school_scores.csv"))
 # Filter appropriate Data
 df_math_gpa = df[["Year", "State.Name" , "Academic Subjects.Mathematics.Average GPA"]]
 
 # Group data from specific states
-df_mathGPA_Kansas = df_math_gpa.loc[df_math_gpa["State.Name"] == "Kansas"]
-df_mathGPA_Kansas = df_mathGPA_Kansas.reset_index(drop=True)
+states = ["Kansas", "California", "Texas", "New York", "Florida"]
+states_data = []
+for i, state in enumerate(states):
+    states_data.append(df_math_gpa.loc[df_math_gpa["State.Name"] == state])
+    states_data[i] = states_data[i].reset_index(drop=True)
 
-print(df_mathGPA_Kansas)
+get_states(states)
+
