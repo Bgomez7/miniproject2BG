@@ -3,7 +3,7 @@
 INF601 Advanced Programming with Python Brayan Gomez
 
 ## Description
-This project uses Pandas and Faker to create dataframes.
+This project uses Pandas and datasets from kaggle.com to create dataframes. The dataframes are worked on and represented by graph using matplotlib.
 
 ## Pip install instructions
 Please run the following:
