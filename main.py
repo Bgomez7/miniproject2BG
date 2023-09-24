@@ -1,13 +1,6 @@
 # INF601 - Advanced Programming in Python
 # Brayan Gomez
 # Mini Project 2
-import array
-
-# (10/10 points) Using matplotlib, graph this data in a way that will visually represent the data. Really try to build some fancy charts here as it will greatly help you in future homework assignments and in the final project.
-# (10/10 points) Save these graphs in a folder called charts as PNG files. Do not upload these to your project folder, the project should save these when it executes. You may want to add this folder to your .gitignore file.
-# (10/10 points) There should be a minimum of 5 commits on your project, be sure to commit often!
-# (10/10 points) I will be checking out the master branch of your project. Please be sure to include a requirements.txt file which contains all the packages that need installed. You can create this file with the output of pip freeze at the terminal prompt.
-# (20/20 points) There should be a README.md file in your project that explains what your project is, how to install the pip requirements, and how to execute the program. Please use the GitHub flavor of Markdown. Be thorough on the explanations.
 
 import matplotlib.pyplot as plt
 import pandas as pd
@@ -25,24 +18,24 @@ def files_found():
     # Check csv file is found
     try:
         data = pd.read_csv("school_scores.csv")
-    except:
+    except FileNotFoundError:
         print("school_scores.csv not found, check file is inside folder running main.py")
         sys.exit()
 
     return data
 
 
-def get_states():
+def get_states(dataframe):
     states = []
     # get 5 states
-    for i in range(1,3):
+    for i in range(1, 6):
         # verify the states
         while True:
             print(f"Enter state(format:\"Kansas\"): ")
             state_input = input(">")
             try:
                 print("Verifying...")
-                if len(df.loc[df["State.Name"] == state_input]) == 0:
+                if len(dataframe.loc[dataframe["State.Name"] == state_input]) == 0:
                     raise NameError
                 print("Valid")
                 states.append(state_input)
@@ -52,14 +45,14 @@ def get_states():
     return states
 
 
-def get_states_mathgpa(state):
-    state_gpa = (df_math_gpa.loc[df_math_gpa["State.Name"] == state])
+def get_states_math_gpa(dataframe, state):
+    state_gpa = (dataframe.loc[dataframe["State.Name"] == state])
     state_gpa = state_gpa.reset_index(drop=True)
 
     return state_gpa
 
 
-def graph_mathgpa(state):
+def graph_math_gpa(state):
     y_axis = [gpa for gpa in state["Academic Subjects.Mathematics.Average GPA"]]
     x_axis = [year for year in state["Year"]]
     # plot the graph
@@ -73,17 +66,22 @@ def graph_mathgpa(state):
     plt.xticks(x_axis)
 
     # labels for the graph
-    plt.title(f"Average GPA for Math in a Year for {state}")
+    plt.title(f"Average GPA for Math in a Year for {state['State.Name'][0]}")
     plt.xlabel("Year")
     plt.ylabel("GPA")
 
+    # Save files to charts directory
+    save_file = f"charts/{state['State.Name'][0]}.png"
+    plt.savefig(save_file)
+
+    # Render the graph
     plt.show()
 
 
 # CSV is found and saved to a panda dataframe
-df = pd.DataFrame(pd.read_csv("school_scores.csv"))
+df = pd.DataFrame(files_found())
 # Filter appropriate Data
-df_math_gpa = df[["Year", "State.Name" , "Academic Subjects.Mathematics.Average GPA"]]
-
-for state in get_states():
-    graph_mathgpa(get_states_mathgpa(state))
+df_math_gpa = df[["Year", "State.Name", "Academic Subjects.Mathematics.Average GPA"]]
+# Graph each state
+for state in get_states(df):
+    graph_math_gpa(get_states_math_gpa(df_math_gpa, state))
